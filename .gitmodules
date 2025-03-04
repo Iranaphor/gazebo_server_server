@@ -1,0 +1,3 @@
+[submodule "src/gazebo_multisim_server"]
+	path = src/gazebo_multisim_server
+	url = https://github.com/Iranaphor/gazebo_multisim_server
