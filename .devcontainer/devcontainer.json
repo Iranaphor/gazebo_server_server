@@ -1,0 +1,34 @@
+{
+  "name": "ROS Humble Dev Container",
+  // We reference the Dockerfile in this folder, and use ".." as the build context
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // Run as root or a developer user (root is simplest for ROS dev)
+  "remoteUser": "root",
+
+  // We pass X11-related arguments so Rviz/Gazebo windows can show on the host
+  "runArgs": [
+    "--net=host",
+    "--env=DISPLAY",
+    "--env=QT_X11_NO_MITSHM=1",
+    "-v", "/tmp/.X11-unix:/tmp/.X11-unix"
+  ],
+
+  // Mount the repo's "src" folder into /root/ws/src
+  // so you can edit code locally and build inside the container
+  "mounts": [
+    "source=${localWorkspaceFolder}/src,target=/root/ws/src,type=bind"
+  ],
+
+  // After the container is created, run these commands to install dependencies and build
+  "postCreateCommand": "bash -c ' \
+    source /opt/ros/humble/setup.bash && \
+    rosdep update && \
+    rosdep install -y --from-paths /root/ws/src --rosdistro=humble --ignore-src && \
+    cd /root/ws && \
+    colcon build --symlink-install \
+  '"
+}
